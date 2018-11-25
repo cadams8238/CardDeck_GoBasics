@@ -6,6 +6,7 @@ import (
 	"math/rand"
 	"os"
 	"strings"
+	"time"
 )
 
 // Create a new type of 'deck' which is a slice of
@@ -66,8 +67,11 @@ func newDeckFromFile(filename string) deck {
 }
 
 func (d deck) shuffle() {
+	source := rand.NewSource(time.Now().UnixNano()) // uses current time to create source with a diff number with each call
+	seededRand := rand.New(source)                  // creates new rand instance so we can pass in a diff seed value and get better randomization
+
 	for i := range d {
-		newPosition := rand.Intn(len(d) - 1)        // get random number from 0 to length of slice
+		newPosition := seededRand.Intn(len(d) - 1)  // get random number from 0 to length of slice
 		d[i], d[newPosition] = d[newPosition], d[i] // swap cards
 	}
 }
